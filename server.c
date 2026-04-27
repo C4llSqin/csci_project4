@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,6 +11,8 @@ struct message {
     char msg[200]; // message body
 };
 
+typedef struct message msgS;
+
 void terminate(int sig) {
     printf("Exiting....\n");
     fflush(stdout);
@@ -21,42 +22,25 @@ void terminate(int sig) {
 int main() {
     int server;
     int target;
-    int dummyfd;
-    struct message req;
+    // int dummyfd;
+    msgS req;
     signal(SIGPIPE,SIG_IGN);
     signal(SIGINT,terminate);
     server = open("serverFIFO",O_RDONLY);
-    dummyfd = open("serverFIFO",O_WRONLY);
+    // dummyfd = open("serverFIFO",O_WRONLY);
 
     while (1) {
-        // TODO:
-        // read requests from serverFIFO
-        read(server, &req, sizeof(struct message));
+        int byte_count = read(server, &req, sizeof(msgS));
+		if (byte_count != sizeof(msgS)) continue; 
+		printf("Received a request from %s to send the message %s to %s.\n",req.source,req.msg,req.target);
 
-
-
-
-
-
-        printf("Received a request from %s to send the message %s to %s.\n",req.source,req.msg,req.target);
-
-        // TODO:
-        // open target FIFO and write the whole message struct to the target FIFO
-        // close target FIFO after writing the message
         target = open(req.target, O_WRONLY);
-        write(target, &req, sizeof(struct message));
+        write(target, &req, sizeof(msgS));
         close(target);
-
-
-
-
-
-
-
 
     }
     close(server);
-    close(dummyfd);
+    // close(dummyfd);
     return 0;
 }
 
