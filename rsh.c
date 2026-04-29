@@ -31,9 +31,9 @@ void terminate(int sig) {
 void sendmsg (char *user, char *target, char *msg) {
     // msgS* payload = malloc(sizeof(msgS));
     msgS payload;
-    strncpy(&payload.source, user, 50);
-    strncpy(&payload.target, target, 50);
-    strncpy(&payload.msg, msg, 200);
+    strncpy(payload.source, user, 50);
+    strncpy(payload.target, target, 50);
+    strncpy(payload.msg, msg, 200);
 
     int server_fd = open("serverFIFO", O_WRONLY);
     write(server_fd, &payload, sizeof(msgS));
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            char *msg = strtok(NULL, " ");
+            char *msg = strtok(NULL, "");
             if (targetName == NULL) {
                 printf("sendmsg: you have to enter a message\n");
                 continue;
