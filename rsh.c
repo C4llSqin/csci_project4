@@ -49,7 +49,7 @@ void* messageListener(void *arg) {
     while (1) {
         int a = read(our_fifo_fd, &req, sizeof(msgS));
                 if (!(a > 0)) continue;
-        printf("%s: %s\n", req.source,req.msg);
+        printf("Incoming message from %s: %s\n", req.source,req.msg);
     }
 
     close(our_fifo_fd);
